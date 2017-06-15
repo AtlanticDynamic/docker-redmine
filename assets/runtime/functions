@@ -888,6 +888,7 @@ clear_sessions() {
     # clear sessions and application cache
     exec_as_redmine bundle exec rake tmp:cache:clear >/dev/null
     exec_as_redmine bundle exec rake tmp:sessions:clear >/dev/null
+}
 
 setup_gems() {
   # copy the installed gems and Gemfile.lock to ${REDMINE_DATA_DIR}/tmp/
