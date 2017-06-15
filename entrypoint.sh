@@ -13,7 +13,15 @@ case ${1} in
 
     case ${1} in
       app:start)
-        migrate_database
+        create_tmp_dirs
+
+        if [[ "${REDMINE_MIGRATE_DB}" == "true" ]]; then
+            migrate_database
+        fi
+
+        clear_sessions
+        setup_gems
+
         install_plugins
         install_themes
 
@@ -26,7 +34,13 @@ case ${1} in
         exec /usr/bin/supervisord -nc /etc/supervisor/supervisord.conf
         ;;
       app:init)
-        migrate_database
+        create_tmp_dirs
+        if [[ "${REDMINE_MIGRATE_DB}" == "true" ]]; then
+            migrate_database
+        fi
+        clear_sessions
+        setup_gems
+
         install_plugins
         install_themes
         ;;

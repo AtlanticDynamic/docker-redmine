@@ -6,6 +6,7 @@ ENV REDMINE_VERSION=3.3.3 \
     REDMINE_HOME="/home/redmine" \
     REDMINE_LOG_DIR="/var/log/redmine" \
     REDMINE_CACHE_DIR="/etc/docker-redmine" \
+    REDMINE_MIGRATE_DB="false" \
     RAILS_ENV=production
 
 ENV REDMINE_INSTALL_DIR="${REDMINE_HOME}/redmine" \

@@ -868,40 +868,27 @@ configure_nginx() {
   update_template /etc/supervisor/conf.d/nginx.conf NGINX_ENABLED
 }
 
-migrate_database() {
-  CACHE_VERSION=
-  [[ -f ${REDMINE_DATA_DIR}/tmp/VERSION ]] && CACHE_VERSION=$(cat ${REDMINE_DATA_DIR}/tmp/VERSION)
-  if [[ ${REDMINE_VERSION} != ${CACHE_VERSION} ]]; then
-    ## version check, only upgrades are allowed
-    if [[ -n ${CACHE_VERSION} && $(vercmp ${REDMINE_VERSION} ${CACHE_VERSION}) -lt 0 ]]; then
-      echo
-      echo "ERROR: "
-      echo "  Cannot downgrade from Redmine version ${CACHE_VERSION} to ${REDMINE_VERSION}."
-      echo "  Only upgrades are allowed. Please use sameersbn/redmine:${CACHE_VERSION} or higher."
-      echo "  Cannot continue. Aborting!"
-      echo
-      return 1
-    fi
-
+create_tmp_dirs() {
     # recreate the tmp directory
     rm -rf ${REDMINE_DATA_DIR}/tmp
     exec_as_redmine mkdir -p ${REDMINE_DATA_DIR}/tmp
     exec_as_redmine mkdir -p ${REDMINE_DATA_DIR}/tmp/thumbnails
     exec_as_redmine mkdir -p ${REDMINE_DATA_DIR}/tmp/plugin_assets
     exec_as_redmine chmod -R 0755 ${REDMINE_DATA_DIR}/tmp
+}
 
+migrate_database() {
     echo "Migrating database. Please be patient, this could take a while..."
     exec_as_redmine bundle exec rake db:create >/dev/null
     exec_as_redmine bundle exec rake db:migrate >/dev/null
+}
 
+clear_sessions() {
     # clear sessions and application cache
     exec_as_redmine bundle exec rake tmp:cache:clear >/dev/null
     exec_as_redmine bundle exec rake tmp:sessions:clear >/dev/null
 
-    # update version file
-    echo ${REDMINE_VERSION} | exec_as_redmine tee --append ${REDMINE_DATA_DIR}/tmp/VERSION >/dev/null
-  fi
-
+setup_gems() {
   # copy the installed gems and Gemfile.lock to ${REDMINE_DATA_DIR}/tmp/
   if [[ ! -d ${REDMINE_DATA_DIR}/tmp/bundle ]]; then
     exec_as_redmine cp -a ${REDMINE_INSTALL_DIR}/vendor/bundle ${REDMINE_DATA_DIR}/tmp/
