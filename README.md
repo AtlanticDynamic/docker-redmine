@@ -634,6 +634,7 @@ Below is the complete list of parameters that can be set using environment varia
 - **INCOMING_EMAIL_CATEGORY**: Name of the target category.
 - **INCOMING_EMAIL_PRIORITY**: Name of the target priority.
 - **INCOMING_EMAIL_PRIVATE**: Create new issues as private.
+- **INCOMING_EMAIL_FOLDER**: Check an IMAP subfolder for new emails.
 - **INCOMING_EMAIL_ALLOW_OVERRIDE**: Allow email content to override attributes specified by previous options. Value is a comma separated list of attributes. See [redmine documentation](http://www.redmine.org/projects/redmine/wiki/RedmineReceivingEmails#Fetching-emails-from-an-IMAP-server) for acceptable values.
 - **REDMINE_MIGRATE_DB**: Automatically apply database migrations upon start. Defaults to `false`.
 
